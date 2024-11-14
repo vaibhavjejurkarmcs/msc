@@ -1,0 +1,32 @@
+
+const properties = [
+    { "_id": "p1", "property_id": "P001", "area": 1200, "location": "Mumbai", "rate": 150000, "owner_id": "o1" },
+    { "_id": "p2", "property_id": "P002", "area": 800, "location": "Pune", "rate": 95000, "owner_id": "o2" },
+    { "_id": "p3", "property_id": "P003", "area": 1500, "location": "Nashik", "rate": 120000, "owner_id": "o3" },
+    { "_id": "p4", "property_id": "P004", "area": 1800, "location": "Nashik", "rate": 130000, "owner_id": "o4" },
+    { "_id": "p5", "property_id": "P005", "area": 1000, "location": "Mumbai", "rate": 85000, "owner_id": "o5" }
+];
+
+const owners = [
+    { "_id": "o1", "owner_id": "O001", "name": "Mr. Patil", "contact_info": "9876543210", "properties_owned": ["P001"] },
+    { "_id": "o2", "owner_id": "O002", "name": "Mr. Sharma", "contact_info": "9123456789", "properties_owned": ["P002"] },
+    { "_id": "o3", "owner_id": "O003", "name": "Mr. Deshmukh", "contact_info": "9345678901", "properties_owned": ["P003"] },
+    { "_id": "o4", "owner_id": "O004", "name": "Mr. Joshi", "contact_info": "9876543211", "properties_owned": ["P004"] },
+    { "_id": "o5", "owner_id": "O005", "name": "Mr. Kapoor", "contact_info": "9000000000", "properties_owned": ["P005"] }
+];
+
+db.properties.insertMany(properties);
+db.owners.insertMany(owners);
+
+const areaSortedProperties = db.properties.find().sort({ "area": 1 }).toArray();
+print("Properties sorted by area:", JSON.stringify(areaSortedProperties, null, 2));
+
+const patilProperty = db.properties.find({ "owner_id": "o1" }).sort({ "rate": 1 }).limit(1).toArray();
+print("Property owned by Mr. Patil with minimum rate:", JSON.stringify(patilProperty, null, 2));
+
+const nashikProperty = db.properties.findOne({ "location": "Nashik" });
+const ownerNashik = db.owners.find({ "owner_id": nashikProperty.owner_id }).toArray();
+print("Owner of property in Nashik:", JSON.stringify(ownerNashik, null, 2));
+
+const lowRateProperties = db.properties.find({ "rate": { "$lt": 100000 } }, { "area": 1, "_id": 0 }).toArray();
+print("Area of properties with rate less than 100000:", JSON.stringify(lowRateProperties, null, 2));
